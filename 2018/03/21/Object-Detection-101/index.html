@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.2" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.2" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.4.2',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="检测主流算法介绍  目前目标检测领域的深度学习方法主要分为两类：two stage的目标检测算法；one stage的目标检测算法。前者是先由算法生成一系列作为样本的候选框，再通过卷积神经网络进行样本分类；后者则不用产生候选框，直接将目标边框定位的问题转化为回归问题处理。正是由于两种方法的差异，在性能上也有不同，前者在检测准确率和定位精度上占优，后者在算法速度上占优。   Two Stage由于在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Object Detection 101">
+<meta property="og:url" content="http://yoursite.com/2018/03/21/Object-Detection-101/index.html">
+<meta property="og:site_name" content="Art is long, and Time is fleeting">
+<meta property="og:description" content="检测主流算法介绍  目前目标检测领域的深度学习方法主要分为两类：two stage的目标检测算法；one stage的目标检测算法。前者是先由算法生成一系列作为样本的候选框，再通过卷积神经网络进行样本分类；后者则不用产生候选框，直接将目标边框定位的问题转化为回归问题处理。正是由于两种方法的差异，在性能上也有不同，前者在检测准确率和定位精度上占优，后者在算法速度上占优。   Two Stage由于在">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://olvsdfklp.bkt.clouddn.com/v2-b8b63a62a0cb6be805bcb7f33e4a8ef6_r.jpg">
+<meta property="og:updated_time" content="2018-04-09T16:55:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Object Detection 101">
+<meta name="twitter:description" content="检测主流算法介绍  目前目标检测领域的深度学习方法主要分为两类：two stage的目标检测算法；one stage的目标检测算法。前者是先由算法生成一系列作为样本的候选框，再通过卷积神经网络进行样本分类；后者则不用产生候选框，直接将目标边框定位的问题转化为回归问题处理。正是由于两种方法的差异，在性能上也有不同，前者在检测准确率和定位精度上占优，后者在算法速度上占优。   Two Stage由于在">
+<meta name="twitter:image" content="http://olvsdfklp.bkt.clouddn.com/v2-b8b63a62a0cb6be805bcb7f33e4a8ef6_r.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/21/Object-Detection-101/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Object Detection 101 | Art is long, and Time is fleeting</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Art is long, and Time is fleeting</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">What is a man, If his chief good and market of his time Be but to sleep and feed?</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/21/Object-Detection-101/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chiehchiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Art is long, and Time is fleeting">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Object Detection 101
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-03-21 00:08:29" itemprop="dateCreated datePublished" datetime="2018-03-21T00:08:29+08:00">2018-03-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-04-10 00:55:45" itemprop="dateModified" datetime="2018-04-10T00:55:45+08:00">2018-04-10</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>检测主流算法介绍</strong></p>
+<hr>
+<p>目前目标检测领域的深度学习方法主要分为两类：two stage的目标检测算法；<br>one stage的目标检测算法。前者是先由算法生成一系列作为样本的候选框，再通过卷积神经网络进行样本分类；后者则不用产生候选框，直接将目标边框定位的问题转化为回归问题处理。正是由于两种方法的差异，在性能上也有不同，前者在检测准确率和定位精度上占优，后者在算法速度上占优。</p>
+<hr>
+<p><img src="http://olvsdfklp.bkt.clouddn.com/v2-b8b63a62a0cb6be805bcb7f33e4a8ef6_r.jpg" alt="image"></p>
+<h2 id="Two-Stage"><a href="#Two-Stage" class="headerlink" title="Two Stage"></a>Two Stage</h2><p>由于在工作上使用two-stage算法比较多，但是对于one stage的方法接触不多，把自己阅读two stage论文的要点记录如下，也是一次对这方面进展的回顾。而对于two-stage的一些算法，目前常用的改进方法有如下几点:</p>
+<ul>
+<li>BackBone上对模型做出整体的改进：例如对模型的层数加深，或者说加宽；</li>
+<li>Region Proposal (Contextual)：对于该方面的模型加强，一般都是由于低层信息和高层信息之间的权衡；随着网络的加深，一些contextual的信息消失，因此对于一些较小的物体的识别过程中会表现的较差；该改进方法在segmentation当中也有体现：如果task是分类，那损失一些低层信息对结果影响不大，但是对于分割，所需要的pixel-level的分类准确率，对于一些conv.后损失的边缘信息所占的权重比较大；因此需要在模型高层信息中加入一些低层信息来更好地找到一些较小的物体；典型的contextural方法有multi-sscal；multi-path等；而2017年的cvpr中所提出的FPN在目前的主流算法中都有着普遍的应用；</li>
+<li>Data operate：检测网络的第三点可提升方面在于对数据的处理上；对于任何网络模型，数据的重要性可想而知；对于网络，一些较差的数据根本得不到一个较好的模型；或者是一些类别不均衡的模型，也往往得不到一个很好的模型；因此，出现了一系列在数据端，或者或在proposal提出端做出相应的改进；其典型的改进算法有：使用OHEM来对难样本进行更大几率的采样；使用focal loss的方法来降低easy examples对loss的贡献；</li>
+</ul>
+<a id="more"></a>
+<h3 id="Backbone"><a href="#Backbone" class="headerlink" title="Backbone"></a>Backbone</h3><p>首先介绍在backbone端对网络的改进之处：<br>对于backbone，首先做一个卷及神经网络的recap：也就是从深度学习的开始的发展：</p>
+<h4 id="RCNN系列算法-Fast-Rcnn-amp-Faster-Rcnn"><a href="#RCNN系列算法-Fast-Rcnn-amp-Faster-Rcnn" class="headerlink" title="RCNN系列算法(Fast Rcnn &amp; Faster Rcnn)"></a>RCNN系列算法(Fast Rcnn &amp; Faster Rcnn)</h4><h5 id="RCNN"><a href="#RCNN" class="headerlink" title="RCNN"></a>RCNN</h5><p>对于RCNN，该算法应该是14年的算法，该算法是卷积神经网络检测的奠基之作；其核心思想就是在对每张图片选取多个区域，然后每个区域作为一个样本进入一个卷积神经网络来抽取特征，最后使用SVM分类器来对齐分类，和一个回归器来得到准确的边框；<br>不过从现在反看当年的算法，难免会觉得该算法缺点有好多，其中最重要的一点就是对于SS所提取出来的框，不管大小如何，都会resize到224，然后进行卷积神经网络操作；对于准确率影响极大；<br>而对于分类器，还使用的是单分类的SVM；<br>缺点：速度慢，对于一张图片，需要找到上千个proposal，并且做上千次的预测；</p>
+<h5 id="Fast-RCNN"><a href="#Fast-RCNN" class="headerlink" title="Fast RCNN"></a>Fast RCNN</h5><p>对于RCNN，主要做了两点改进：<br>1.对于一张图片跑两千次，时间上太慢，所以需要加速；因此，对于一张图片只做一次卷积，对于生成后的卷积，再生成bounding box；生成算法任然使用SS来启发式生成；而对于生成后的在bbox上的proposal，需要对其进行ROI pooling；<br>2.将softmax替代了多个二类SVM来增加速度；</p>
+<p>主要就是把两千个feature变成了一个feature；提高了速度；</p>
+<h5 id="Faster-RCNN"><a href="#Faster-RCNN" class="headerlink" title="Faster RCNN"></a>Faster RCNN</h5><p>其实就是把SS干掉；进一步的来提速；<br>与前面唯一的区别就是使用了RPN；替代了SS；<br>对于RPN，在后来的SSD中也被间接的用到了；<br>有几点是需要主要的;<br>1.对于RPN的输出，他只是几个bbox，也就是四个数字；没有features；所以在ROIpooling中需要两个东西，bbox和feature；<br>2.对于RPN的softmas，对于背景的proposal，也就是小softmax，对proposal进行过滤；也很好的处理了类别不均衡的问题；</p>
+<h5 id="Mask-RCNN"><a href="#Mask-RCNN" class="headerlink" title="Mask RCNN"></a>Mask RCNN</h5><p>The goal of Detectron is to provide a high-quality, high-performance<br>codebase for object detection <em>research</em>. It is designed to be flexible in order<br>to support rapid implementation and evaluation of novel research. Detectron<br>includes implementations of the following object detection algorithms:</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1703.06870" target="_blank" rel="noopener">Mask R-CNN</a> – <em>Marr Prize at ICCV 2017</em></li>
+<li><a href="https://arxiv.org/abs/1708.02002" target="_blank" rel="noopener">RetinaNet</a> – <em>Best Student Paper Award at ICCV 2017</em></li>
+<li><a href="https://arxiv.org/abs/1506.01497" target="_blank" rel="noopener">Faster R-CNN</a></li>
+<li><a href="https://arxiv.org/abs/1506.01497" target="_blank" rel="noopener">RPN</a></li>
+<li><a href="https://arxiv.org/abs/1504.08083" target="_blank" rel="noopener">Fast R-CNN</a></li>
+<li><a href="https://arxiv.org/abs/1605.06409" target="_blank" rel="noopener">R-FCN</a></li>
+</ul>
+<p>using the following backbone network architectures:</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1611.05431" target="_blank" rel="noopener">ResNeXt{50,101,152}</a></li>
+<li><a href="https://arxiv.org/abs/1512.03385" target="_blank" rel="noopener">ResNet{50,101,152}</a></li>
+<li><a href="https://arxiv.org/abs/1612.03144" target="_blank" rel="noopener">Feature Pyramid Networks</a> (with ResNet/ResNeXt)</li>
+<li><a href="https://arxiv.org/abs/1409.1556" target="_blank" rel="noopener">VGG16</a></li>
+</ul>
+<p>Additional backbone architectures may be easily implemented. For more details about these models, please see <a href="#references">References</a> below.</p>
+<h3 id="Region-Proposal-Contextual"><a href="#Region-Proposal-Contextual" class="headerlink" title="Region Proposal (Contextual)"></a>Region Proposal (Contextual)</h3><h4 id="Feature-Pyramid-Networks"><a href="#Feature-Pyramid-Networks" class="headerlink" title="Feature Pyramid Networks"></a>Feature Pyramid Networks</h4><hr>
+<blockquote>
+<p>Lin T Y, Dollár P, Girshick R, et al. <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Lin_Feature_Pyramid_Networks_CVPR_2017_paper.pdf" target="_blank" rel="noopener">“Feature pyramid networks for object detection”</a> <strong>(FPN)</strong></p>
+</blockquote>
+<hr>
+<p>针对图像中存在大小不同物体的实际情况，尽管主流的检测网络具备一定的scale invariance，但是如果有其他不同尺寸的卷积特征图效果会更好。 </p>
+<hr>
+<h2 id="One-Stage"><a href="#One-Stage" class="headerlink" title="One Stage"></a>One Stage</h2><h3 id="SSD"><a href="#SSD" class="headerlink" title="SSD"></a>SSD</h3><blockquote>
+<p>Liu, Wei, et al. <a href="https://arxiv.org/pdf/1512.02325.pdf" target="_blank" rel="noopener">“Ssd: Single shot multibox detector.”</a><strong>(SSD)</strong></p>
+</blockquote>
+<hr>
+<p>multi-box：对于RCNN系列的算法，区域提议和分类是分两类的；<br>而SSD系列把这两个操作整合成一个步骤了；使得模型速度更快；<br>主要思想：<br>1.对于分类器，直接认为做的是N+1分类，不再做是否是obj；<br>2.对于回归器，也直接只做一次的回归；<br>3.然后再对feature做一次softmax和reg；变相的使用了multi-scale；</p>
+<h4 id="multi-box-RPN-like"><a href="#multi-box-RPN-like" class="headerlink" title="multi-box(RPN-like)"></a>multi-box(RPN-like)</h4><p>以其为中心采样数个有不同形状和不同比例的边界框。</p>
+<ul>
+<li>给定大小 $s\in (0,1]$，那么生成的边界框形状是 $ws \times hs$</li>
+<li>给定比例 $r &gt; 0$，那么生成的边界框形状是 $w\sqrt{r} \times \frac{h}{\sqrt{r}}$</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">from mxnet import nd</span><br><span class="line">from mxnet.contrib.ndarray import MultiBoxPrior</span><br><span class="line"></span><br><span class="line"># shape: batch x channel x height x weight</span><br><span class="line">n = 40</span><br><span class="line">x = nd.random.uniform(shape=(1, 3, n, n))</span><br><span class="line"></span><br><span class="line">y = MultiBoxPrior(x, sizes=[.5,.25,.1], ratios=[1,2,.5])</span><br><span class="line"></span><br><span class="line">boxes = y.reshape((n, n, -1, 4))</span><br><span class="line">print(boxes.shape)</span><br><span class="line"># The first anchor box centered on (20, 20)</span><br><span class="line"># its format is (x_min, y_min, x_max, y_max)</span><br><span class="line">boxes[20, 20, 0, :]</span><br></pre></td></tr></table></figure>
+<p>对于m个s和n个r，会生成m+n-1个anchor；</p>
+<h4 id="物体分类"><a href="#物体分类" class="headerlink" title="物体分类"></a>物体分类</h4><p>对于每一张图片，会出现anchor*（class+1）个参数；并且需要乘以一个通道数channel；<br>其中的channel这一维度里面，所代表的就是不同anchor的置信度；<br>假设输出是Y，那么对应输入中第$n$个样本的第$(i,j)$像素的置信值是在Y[n,:,i,j]里。具体来说，对于以(i,j)为中心的第a个锚框，</p>
+<ul>
+<li>通道 a*(num_class+1) 是其只包含背景的分数</li>
+<li>通道 a*(num_class+1)+1+b 是其包含第b个物体的分数</li>
+</ul>
+<h4 id="bbox预测"><a href="#bbox预测" class="headerlink" title="bbox预测"></a>bbox预测</h4><p>某一个bbox，转换到真实的image里面，他的delta是什么；<br>关于反mapping，只是需要乘回原来的conv的大小而已；不需要做到像素级的精确度；</p>
+<h4 id="减半模块"><a href="#减半模块" class="headerlink" title="减半模块"></a>减半模块</h4><p>其实就是feature的pooling；但是需要注意的是，这个只是对提取所得到的feature，也就是ROIs的feature，然后对这个进行减半；</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<li><a href="https://arxiv.org/abs/1712.04440" target="_blank" rel="noopener">Data Distillation: Towards Omni-Supervised Learning</a>.<br>Ilija Radosavovic, Piotr Dollár, Ross Girshick, Georgia Gkioxari, and Kaiming He.<br>Tech report, arXiv, Dec. 2017.</li>
+<li><a href="https://arxiv.org/abs/1711.10370" target="_blank" rel="noopener">Learning to Segment Every Thing</a>.<br>Ronghang Hu, Piotr Dollár, Kaiming He, Trevor Darrell, and Ross Girshick.<br>Tech report, arXiv, Nov. 2017.</li>
+<li><a href="https://arxiv.org/abs/1711.07971" target="_blank" rel="noopener">Non-Local Neural Networks</a>.<br>Xiaolong Wang, Ross Girshick, Abhinav Gupta, and Kaiming He.<br>Tech report, arXiv, Nov. 2017.</li>
+<li><a href="https://arxiv.org/abs/1703.06870" target="_blank" rel="noopener">Mask R-CNN</a>.<br>Kaiming He, Georgia Gkioxari, Piotr Dollár, and Ross Girshick.<br>IEEE International Conference on Computer Vision (ICCV), 2017.</li>
+<li><a href="https://arxiv.org/abs/1708.02002" target="_blank" rel="noopener">Focal Loss for Dense Object Detection</a>.<br>Tsung-Yi Lin, Priya Goyal, Ross Girshick, Kaiming He, and Piotr Dollár.<br>IEEE International Conference on Computer Vision (ICCV), 2017.</li>
+<li><a href="https://arxiv.org/abs/1706.02677" target="_blank" rel="noopener">Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour</a>.<br>Priya Goyal, Piotr Dollár, Ross Girshick, Pieter Noordhuis, Lukasz Wesolowski, Aapo Kyrola, Andrew Tulloch, Yangqing Jia, and Kaiming He.<br>Tech report, arXiv, June 2017.</li>
+<li><a href="https://arxiv.org/abs/1704.07333" target="_blank" rel="noopener">Detecting and Recognizing Human-Object Interactions</a>.<br>Georgia Gkioxari, Ross Girshick, Piotr Dollár, and Kaiming He.<br>Tech report, arXiv, Apr. 2017.</li>
+<li><a href="https://arxiv.org/abs/1612.03144" target="_blank" rel="noopener">Feature Pyramid Networks for Object Detection</a>.<br>Tsung-Yi Lin, Piotr Dollár, Ross Girshick, Kaiming He, Bharath Hariharan, and Serge Belongie.<br>IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2017.</li>
+<li><a href="https://arxiv.org/abs/1611.05431" target="_blank" rel="noopener">Aggregated Residual Transformations for Deep Neural Networks</a>.<br>Saining Xie, Ross Girshick, Piotr Dollár, Zhuowen Tu, and Kaiming He.<br>IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2017.</li>
+<li><a href="http://arxiv.org/abs/1605.06409" target="_blank" rel="noopener">R-FCN: Object Detection via Region-based Fully Convolutional Networks</a>.<br>Jifeng Dai, Yi Li, Kaiming He, and Jian Sun.<br>Conference on Neural Information Processing Systems (NIPS), 2016.</li>
+<li><a href="http://arxiv.org/abs/1512.03385" target="_blank" rel="noopener">Deep Residual Learning for Image Recognition</a>.<br>Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.<br>IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016.</li>
+<li><a href="http://arxiv.org/abs/1506.01497" target="_blank" rel="noopener">Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks</a><br>Shaoqing Ren, Kaiming He, Ross Girshick, and Jian Sun.<br>Conference on Neural Information Processing Systems (NIPS), 2015.</li>
+<li><a href="http://arxiv.org/abs/1504.08083" target="_blank" rel="noopener">Fast R-CNN</a>.<br>Ross Girshick.<br>IEEE International Conference on Computer Vision (ICCV), 2015.</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/20/cnn/" rel="next" title="Convolutional Neural Network 101">
+                <i class="fa fa-chevron-left"></i> Convolutional Neural Network 101
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/21/hello-world/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Chiehchiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Two-Stage"><span class="nav-number">1.</span> <span class="nav-text">Two Stage</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Backbone"><span class="nav-number">1.1.</span> <span class="nav-text">Backbone</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RCNN系列算法-Fast-Rcnn-amp-Faster-Rcnn"><span class="nav-number">1.1.1.</span> <span class="nav-text">RCNN系列算法(Fast Rcnn &amp; Faster Rcnn)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RCNN"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">RCNN</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Fast-RCNN"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">Fast RCNN</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Faster-RCNN"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">Faster RCNN</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Mask-RCNN"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">Mask RCNN</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Region-Proposal-Contextual"><span class="nav-number">1.2.</span> <span class="nav-text">Region Proposal (Contextual)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Feature-Pyramid-Networks"><span class="nav-number">1.2.1.</span> <span class="nav-text">Feature Pyramid Networks</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#One-Stage"><span class="nav-number">2.</span> <span class="nav-text">One Stage</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSD"><span class="nav-number">2.1.</span> <span class="nav-text">SSD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#multi-box-RPN-like"><span class="nav-number">2.1.1.</span> <span class="nav-text">multi-box(RPN-like)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#物体分类"><span class="nav-number">2.1.2.</span> <span class="nav-text">物体分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bbox预测"><span class="nav-number">2.1.3.</span> <span class="nav-text">bbox预测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#减半模块"><span class="nav-number">2.1.4.</span> <span class="nav-text">减半模块</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">3.</span> <span class="nav-text">References</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chiehchiu</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
