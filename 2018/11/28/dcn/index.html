@@ -110,14 +110,14 @@
 
   <meta name="description" content="论文链接：https://arxiv.org/pdf/1811.11168.pdf论文作者：Jifeng Dai+, Haozhi Qi+, Yuwen Xiong+, Yi Li+, Guodong Zhang+, Han Hu, and Yichen Wei发表：arxiv">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Deformable convolution network">
+<meta property="og:title" content="Deformable Convolution Network">
 <meta property="og:url" content="http://yoursite.com/2018/11/28/dcn/index.html">
 <meta property="og:site_name" content="Art is long, and Time is fleeting">
 <meta property="og:description" content="论文链接：https://arxiv.org/pdf/1811.11168.pdf论文作者：Jifeng Dai+, Haozhi Qi+, Yuwen Xiong+, Yi Li+, Guodong Zhang+, Han Hu, and Yichen Wei发表：arxiv">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-28T07:57:25.956Z">
+<meta property="og:updated_time" content="2018-11-28T09:36:50.698Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Deformable convolution network">
+<meta name="twitter:title" content="Deformable Convolution Network">
 <meta name="twitter:description" content="论文链接：https://arxiv.org/pdf/1811.11168.pdf论文作者：Jifeng Dai+, Haozhi Qi+, Yuwen Xiong+, Yi Li+, Guodong Zhang+, Han Hu, and Yichen Wei发表：arxiv">
 
 
@@ -135,7 +135,7 @@
   };
 </script>
 
-  <title>Deformable convolution network | Art is long, and Time is fleeting</title>
+  <title>Deformable Convolution Network | Art is long, and Time is fleeting</title>
   
 
 
@@ -303,7 +303,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Deformable convolution network
+          <h1 class="post-title" itemprop="name headline">Deformable Convolution Network
               
             
           </h1>
@@ -328,7 +328,7 @@
                 
               
 
-              <time title="Created: 2018-11-28 23:04:23 / Modified: 15:57:25" itemprop="dateCreated datePublished" datetime="2018-11-28T23:04:23+08:00">2018-11-28</time>
+              <time title="Created: 2018-11-28 23:04:23 / Modified: 17:36:50" itemprop="dateCreated datePublished" datetime="2018-11-28T23:04:23+08:00">2018-11-28</time>
             
 
             
@@ -366,7 +366,11 @@
       
 
       
-        <p>论文链接：<a href="https://arxiv.org/pdf/1811.11168.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1811.11168.pdf</a><br>论文作者：Jifeng Dai+, Haozhi Qi<em>+, Yuwen Xiong</em>+, Yi Li<em>+, Guodong Zhang</em>+, Han Hu, and Yichen Wei<br>发表：arxiv<br><a id="more"></a></p>
+        <p>论文链接：<a href="https://arxiv.org/pdf/1811.11168.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1811.11168.pdf</a><br>论文作者：Jifeng Dai+, Haozhi Qi<em>+, Yuwen Xiong</em>+, Yi Li<em>+, Guodong Zhang</em>+, Han Hu, and Yichen Wei<br>发表：arxiv<br><a id="more"></a><br>感觉名字叫extended dilated convolution更合适。用convolution去学习dilatation的值，和STN异曲同工。<br>那么，首先就从deepmind的STN开始讲起，对DCN的前生今世；</p>
+<h2 id="STN"><a href="#STN" class="headerlink" title="STN"></a>STN</h2><p>论文链接：<a href="https://arxiv.org/pdf/1506.02025.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1506.02025.pdf</a><br>论文作者：Max Jaderberg Karen Simonyan Andrew Zisserman Koray Kavukcuoglu<br>作者单位：Google DeepMind, London, UK</p>
+<p>对于这篇论文，其主要目的就是为了解决卷积层在空间上的卷积（but are still limited by the lack of ability to be spatially invariant to the input data）；<br>也就是Spatial Transformer；除了这个，貌似也有很多work也是在空间层面上做paper；例如一些non local的general non local在不同的通道数上做一样；</p>
+<p>卷积神经网络在图像分类，目标检测等任务上显示了强大的特征提取能力，且CNN本身具有一定的位移、旋转、尺度不变性。然而，对于一些图像数据变形的情况，CNN并不能自适应地学习图像的变形情况。<br>Spatial Transformer Networks （以下均简称STN）提供了一种可微分的网络结构，不需要关键点的标定，能够根据分类或者其它任务自适应地将数据进行空间变换和对齐（包括平移、缩放、旋转以及其它几何变换等）。 </p>
+<p>个人感觉貌似在这篇文章之前 detection工作好像还没有出现，因为对于本文的理解，基本上做的就是将传统的cls变换成det的task；可以从图中看出，对于MNSIST数据库进行的分类；<br>!image[<a href="https://pan.baidu.com/s/1WyF2VXbbFkXL4yOZxeodDw]" target="_blank" rel="noopener">https://pan.baidu.com/s/1WyF2VXbbFkXL4yOZxeodDw]</a></p>
 
       
     </div>
@@ -447,8 +451,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -493,6 +506,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#STN"><span class="nav-number">1.</span> <span class="nav-text">STN</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
