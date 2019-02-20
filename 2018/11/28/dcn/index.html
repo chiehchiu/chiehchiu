@@ -115,10 +115,12 @@
 <meta property="og:site_name" content="Art is long, and Time is fleeting">
 <meta property="og:description" content="论文链接：https://arxiv.org/pdf/1811.11168.pdf论文作者：Jifeng Dai+, Haozhi Qi+, Yuwen Xiong+, Yi Li+, Guodong Zhang+, Han Hu, and Yichen Wei发表：arxiv">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-28T09:38:27.994Z">
+<meta property="og:image" content="https://pan.baidu.com/s/1WyF2VXbbFkXL4yOZxeodDw">
+<meta property="og:updated_time" content="2018-11-29T08:36:49.843Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Deformable Convolution Network">
 <meta name="twitter:description" content="论文链接：https://arxiv.org/pdf/1811.11168.pdf论文作者：Jifeng Dai+, Haozhi Qi+, Yuwen Xiong+, Yi Li+, Guodong Zhang+, Han Hu, and Yichen Wei发表：arxiv">
+<meta name="twitter:image" content="https://pan.baidu.com/s/1WyF2VXbbFkXL4yOZxeodDw">
 
 
 
@@ -328,12 +330,24 @@
                 
               
 
-              <time title="Created: 2018-11-28 23:04:23 / Modified: 17:38:27" itemprop="dateCreated datePublished" datetime="2018-11-28T23:04:23+08:00">2018-11-28</time>
+              <time title="Created: 2018-11-28 23:04:23" itemprop="dateCreated datePublished" datetime="2018-11-28T23:04:23+08:00">2018-11-28</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-11-29 16:36:49" itemprop="dateModified" datetime="2018-11-29T16:36:49+08:00">2018-11-29</time>
               
             
           </span>
@@ -370,7 +384,8 @@
 <h2 id="STN"><a href="#STN" class="headerlink" title="STN"></a>STN</h2><p>论文链接：<a href="https://arxiv.org/pdf/1506.02025.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1506.02025.pdf</a><br>论文作者：Max Jaderberg Karen Simonyan Andrew Zisserman Koray Kavukcuoglu<br>作者单位：Google DeepMind, London, UK</p>
 <p>对于这篇论文，其主要目的就是为了解决卷积层在空间上的卷积（but are still limited by the lack of ability to be spatially invariant to the input data）；<br>也就是Spatial Transformer；除了这个，貌似也有很多work也是在空间层面上做paper；例如一些non local的general non local在不同的通道数上做一样；</p>
 <p>卷积神经网络在图像分类，目标检测等任务上显示了强大的特征提取能力，且CNN本身具有一定的位移、旋转、尺度不变性。然而，对于一些图像数据变形的情况，CNN并不能自适应地学习图像的变形情况。<br>Spatial Transformer Networks （以下均简称STN）提供了一种可微分的网络结构，不需要关键点的标定，能够根据分类或者其它任务自适应地将数据进行空间变换和对齐（包括平移、缩放、旋转以及其它几何变换等）。 </p>
-<p>个人感觉貌似在这篇文章之前 detection工作好像还没有出现，因为对于本文的理解，基本上做的就是将传统的cls变换成det的task；可以从图中看出，对于MNSIST数据库进行的分类；<br>!image[<a href="https://pan.baidu.com/s/1WyF2VXbbFkXL4yOZxeodDw]" target="_blank" rel="noopener">https://pan.baidu.com/s/1WyF2VXbbFkXL4yOZxeodDw]</a></p>
+<p>个人感觉貌似在这篇文章之前 detection工作好像还没有出现，因为对于本文的理解，基本上做的就是将传统的cls变换成det的task；可以从图中看出，对于MNSIST数据库进行的分类；<br><img src="https://pan.baidu.com/s/1WyF2VXbbFkXL4yOZxeodDw" alt="image"><br>从图中可以看出来，对于一张数字（a），首先是进行location的网络进行定位的，然后再经过一个仿射变换，变成了（c）的样子；然后再对得到的图片进行分类；而这个loc network就相当于是rpn；而文中说到，还有一个spatial attention机制的module.<br>STD一般分为三个部分：</p>
+<h3 id="location-network"><a href="#location-network" class="headerlink" title="location network"></a>location network</h3><h3 id="parameterised-sampling-grid"><a href="#parameterised-sampling-grid" class="headerlink" title="parameterised sampling grid"></a>parameterised sampling grid</h3><h3 id="image-sampling"><a href="#image-sampling" class="headerlink" title="image sampling"></a>image sampling</h3><h2 id="deformable-convolutional-network"><a href="#deformable-convolutional-network" class="headerlink" title="deformable convolutional network"></a>deformable convolutional network</h2><p>对于自适应学习的输入位置进行调整：<br>例如，同一层的激活单元的感受野是一样大的，这对于目标检测来说就是不太合理的，因为不同位置对应的目标大小是不一样的。如果能够使得感受野在不同位置的大小进行自适应调整，那么对于目标检测语义分割等等任务的帮助必然很大。</p>
 
       
     </div>
@@ -516,7 +531,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#STN"><span class="nav-number">1.</span> <span class="nav-text">STN</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#STN"><span class="nav-number">1.</span> <span class="nav-text">STN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#location-network"><span class="nav-number">1.1.</span> <span class="nav-text">location network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parameterised-sampling-grid"><span class="nav-number">1.2.</span> <span class="nav-text">parameterised sampling grid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#image-sampling"><span class="nav-number">1.3.</span> <span class="nav-text">image sampling</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deformable-convolutional-network"><span class="nav-number">2.</span> <span class="nav-text">deformable convolutional network</span></a></li></ol></div>
             
 
           </div>
@@ -536,7 +551,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright"> &copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
